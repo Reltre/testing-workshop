@@ -1,5 +1,5 @@
-// import * as postsController from '../posts.todo'
-// import db from '../../utils/db'
+import * as postsController from '../posts.todo'
+import db from '../../utils/db'
 // eslint-disable-next-line no-unused-vars
 import {initDb, generate} from 'til-server-test-utils'
 
@@ -12,7 +12,19 @@ beforeEach(() => initDb())
 test('getPosts returns all posts in the database', async () => {
   // here you'll need to Arrange, Act, and Assert
   // Arrange: set up the req and res mock objects
+  const req = {}
+  const res = {json: jest.fn()} 
+  await postsController.getPosts(res, req)
+  let mock = jest.mock('../../utils/db', () => {
+    return jest.fn().mockImplementation(() => {
+      return {getPosts: true}
+    })
+  })
+  const allPosts = await db.getPosts()
+  expect(res.json).toHaveBeenCalledTimes(1)
+  expect(res.json).toHaveBeenCalledWith()
   // Act: Call getPosts on the postsController with the req and res
+  db.getPosts(req, res);
   // Assert:
   //   - ensure that your mock object functions were called properly
   //   - BONUS: ensure that the posts returned are the ones in the database `await db.getPosts()`
@@ -29,15 +41,22 @@ test('getPost returns the specific post', async () => {
   //   - BONUS: ensure that the post you got back is the same one in the db
 })
 
-test('updatePost updates the post with the given changes', async () => {
-  // BONUS: If you have extra time, try to implement this test as well!
-})
+test('updatePost updates the post with the given changes')
 
 // Here's where you'll add your new `deletePost` tests!
 // - Think more about use cases than code coverage and use those use cases to title your tests
 // - Write the code and tests iteratively as little as necessary at a time.
 // - Create and use a `setup` test object(s) factory to keep your tests focused
-
+test('deletePost gets the post from the database if it exists', async () => {
+})
+test('deletePost does not delete the post when authorId does not match the request user id', async () => {
+})
+test('deletePost sends a 404 if the post does not exist', async () => {
+})
+test('deletePost remove the post from the database', async () => {
+})
+test('deletePost sends back the json for that post', async () => {
+})
 //////// Elaboration & Feedback /////////
 // When you've finished with the exercises:
 // 1. Copy the URL below into your browser and fill out the form
